@@ -25,7 +25,7 @@ stages:
       displayName: unit tests backend
 
 - stage: DeployDev
-  dependsOn: []
+  dependsOn: BuildApp
   displayName: Deploy to DEV environment
   jobs:
   - job: DeployFrontendDev
@@ -40,8 +40,26 @@ stages:
     - script: echo deploying backend app to DEV
       displayName: deploy backend app to DEV
 
+- stage: DeployStage
+  dependsOn: BuildApp
+  displayName: Deploy to Stage environment
+  jobs:
+  - job: DeployFrontendStage
+    displayName: Deploy frontend to Stage
+    steps:
+    - script: echo deploying frontend app to Stage
+      displayName: deploy frontend app to Stage
+
+  - job: DeployBackendStage
+    displayName: Deploy backend to Stage
+    steps:
+    - script: echo deploying backend app to Stage
+      displayName: deploy backend app to Stage
+
 - stage: DeployProd
-  dependsOn: []
+  dependsOn:
+  - DeployDev
+  - DeployStage
   displayName: Deploy to PROD environment
   pool:
     vmImage: 'ubuntu-latest'
